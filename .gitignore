@@ -8,3 +8,4 @@ __tmp/*
 *.pyi
 node_modules
 test.log
+.DS_Store
