@@ -9,7 +9,6 @@
   "main_changeset": true,
   "exports": {
     ".": "./Index.svelte",
-    "./example": "./Example.svelte",
     "./package.json": "./package.json"
   },
   "dependencies": {

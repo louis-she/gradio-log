@@ -1,4 +1,3 @@
+from .log import Log
 
-from .log import log
-
-__all__ = ['log']
+__all__ = ["Log"]

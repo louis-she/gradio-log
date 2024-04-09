@@ -15,9 +15,11 @@
 		submit: never;
 		input: never;
 	}>;
-	export let label = "Textbox";
+	export let log_file = "";
+	export let label = `log of ${log_file}`;
+	export let dark = false;
 	export let elem_id = "";
-	export let elem_classes: string[] = [];
+	export let elem_classes: string[] = ["terminal-block"];
 	export let visible = true;
 	export let value = "";
 	export let show_label: boolean;
@@ -25,19 +27,23 @@
 	export let min_width: number | undefined = undefined;
 	export let loading_status: LoadingStatus | undefined = undefined;
 
-	// When the value changes, dispatch the change event via handle_change()
-	// See the docs for an explanation: https://svelte.dev/docs/svelte-components#script-3-$-marks-a-statement-as-reactive
-
 	let term;
+	let termNode;
+
+	$: theme = dark
+		? { foreground: "white", background: "#1F2937" }
+		: {
+				foreground: "#1F2937",
+				background: "white",
+				selectionBackground: "#e5e7eb",
+			};
+
 	onMount(() => {
 		term = new xterm.Terminal({
-			allowTransparency: true,
-			theme: {
-				foreground: "black",
-				background: "white",
-			},
+			// allowTransparency: true,
+			theme,
 		});
-		term.open(document.getElementById("terminal"));
+		term.open(termNode);
 		const fitAddon = new addon.FitAddon();
 		term.loadAddon(fitAddon);
 		setTimeout(() => {
@@ -45,7 +51,7 @@
 		}, 300);
 	});
 
-	$: if (term) {
+	$: if (term && value) {
 		if (value.trim() !== "") {
 			term.write(value.replace(/\n/g, "\n\r"));
 		}
@@ -55,9 +61,9 @@
 <Block
 	{visible}
 	{elem_id}
-	{elem_classes}
 	{scale}
 	{min_width}
+	elem_classes={[...elem_classes, dark ? "dark" : ""]}
 	allow_overflow={false}
 	padding={true}
 >
@@ -70,10 +76,13 @@
 	{/if}
 	<div>
 		<BlockTitle {show_label} info={undefined}>{label}</BlockTitle>
-		<div id="terminal"></div>
+		<div bind:this={termNode}></div>
 	</div>
 </Block>
 
 <style>
 	@import "./node_modules/@xterm/xterm/css/xterm.css";
+	* :global(.xterm .xterm-viewport) {
+		overflow-y: auto !important;
+	}
 </style>
