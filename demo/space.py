@@ -41,7 +41,6 @@ pip install gradio_log
 from pathlib import Path
 import logging
 import gradio as gr
-import tempfile
 
 from gradio_log import Log
 
