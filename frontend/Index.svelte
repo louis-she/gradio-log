@@ -26,6 +26,41 @@
 	export let scale: number | null = null;
 	export let min_width: number | undefined = undefined;
 	export let loading_status: LoadingStatus | undefined = undefined;
+	export let xterm_allow_proposed_api;
+	export let xterm_allow_transparency;
+	export let xterm_alt_click_moves_cursor;
+	export let xterm_convert_eol;
+	export let xterm_cursor_blink;
+	export let xterm_cursor_inactive_style;
+	export let xterm_cursor_style;
+	export let xterm_cursor_width;
+	export let xterm_custom_glyphs;
+	export let xterm_disable_stdin;
+	export let xterm_document_override;
+	export let xterm_draw_bold_text_in_bright_colors;
+	export let xterm_fast_scroll_modifier;
+	export let xterm_fast_scroll_sensitivity;
+	export let xterm_font_family;
+	export let xterm_font_size;
+	export let xterm_font_weight;
+	export let xterm_font_weight_bold;
+	export let xterm_ignore_bracketed_paste_mode;
+	export let xterm_letter_spacing;
+	export let xterm_line_height;
+	export let xterm_log_level;
+	export let xterm_mac_option_click_forces_selection;
+	export let xterm_mac_option_is_meta;
+	export let xterm_minimum_contrast_ratio;
+	export let xterm_overview_ruler_width;
+	export let xterm_rescale_overlapping_glyphs;
+	export let xterm_right_click_selects_word;
+	export let xterm_screen_reader_mode;
+	export let xterm_scroll_on_user_input;
+	export let xterm_scroll_sensitivity;
+	export let xterm_scrollback;
+	export let xterm_smooth_scroll_duration;
+	export let xterm_tab_stop_width;
+	export let xterm_windows_mode;
 
 	let term;
 	let termNode;
@@ -40,8 +75,42 @@
 
 	onMount(() => {
 		term = new xterm.Terminal({
-			// allowTransparency: true,
 			theme,
+			allowProposedApi: xterm_allow_proposed_api,
+			allowTransparency: xterm_allow_transparency,
+			altClickMovesCursor: xterm_alt_click_moves_cursor,
+			convertEol: xterm_convert_eol,
+			cursorBlink: xterm_cursor_blink,
+			cursorInactiveStyle: xterm_cursor_inactive_style,
+			cursorStyle: xterm_cursor_style,
+			cursorWidth: xterm_cursor_width,
+			customGlyphs: xterm_custom_glyphs,
+			disableStdin: xterm_disable_stdin,
+			documentOverride: xterm_document_override,
+			drawBoldTextInBrightColors: xterm_draw_bold_text_in_bright_colors,
+			fastScrollModifier: xterm_fast_scroll_modifier,
+			fastScrollSensitivity: xterm_fast_scroll_sensitivity,
+			fontFamily: xterm_font_family,
+			fontSize: xterm_font_size,
+			fontWeight: xterm_font_weight,
+			fontWeightBold: xterm_font_weight_bold,
+			ignoreBracketedPasteMode: xterm_ignore_bracketed_paste_mode,
+			letterSpacing: xterm_letter_spacing,
+			lineHeight: xterm_line_height,
+			logLevel: xterm_log_level,
+			macOptionClickForcesSelection: xterm_mac_option_click_forces_selection,
+			macOptionIsMeta: xterm_mac_option_is_meta,
+			minimumContrastRatio: xterm_minimum_contrast_ratio,
+			overviewRulerWidth: xterm_overview_ruler_width,
+			rescaleOverlappingGlyphs: xterm_rescale_overlapping_glyphs,
+			rightClickSelectsWord: xterm_right_click_selects_word,
+			screenReaderMode: xterm_screen_reader_mode,
+			scrollOnUserInput: xterm_scroll_on_user_input,
+			scrollSensitivity: xterm_scroll_sensitivity,
+			smoothScrollDuration: xterm_smooth_scroll_duration,
+			tabStopWidth: xterm_tab_stop_width,
+			scrollback: xterm_scrollback,
+			windowsMode: xterm_windows_mode,
 		});
 		term.open(termNode);
 		const fitAddon = new addon.FitAddon();
@@ -49,6 +118,16 @@
 		setTimeout(() => {
 			fitAddon.fit();
 		}, 300);
+
+		const handleWindowResize = () => {
+			fitAddon.fit();
+		};
+
+		window.addEventListener("resize", handleWindowResize);
+
+		return () => {
+			window.removeEventListener("resize", handleWindowResize);
+		};
 	});
 
 	$: if (term && value) {

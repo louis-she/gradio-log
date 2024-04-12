@@ -1,10 +1,8 @@
+import logging
 from pathlib import Path
-import logging
+
 import gradio as gr
-
 from gradio_log import Log
-
-import logging
 
 
 class CustomFormatter(logging.Formatter):
@@ -51,7 +49,6 @@ logger.info("The logs will be displayed in here.")
 
 
 def create_log_handler(level):
-
     def l(text):
         getattr(logger, level)(text)
 
@@ -64,7 +61,7 @@ with gr.Blocks() as demo:
         for l in ["debug", "info", "warning", "error", "critical"]:
             button = gr.Button(f"log as {l}")
             button.click(fn=create_log_handler(l), inputs=text)
-    Log(log_file)
+    Log(log_file, dark=True)
 
 
 if __name__ == "__main__":

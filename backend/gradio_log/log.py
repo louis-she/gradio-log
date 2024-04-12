@@ -3,11 +3,27 @@
 from __future__ import annotations
 
 import time
-from typing import Any
+from typing import Any, Literal, Optional
 
 from gradio.components.base import FormComponent
 from gradio.events import Events
 from gradio_client.documentation import document
+
+FontWeight = Literal[
+    "normal",
+    "bold",
+    "100",
+    "200",
+    "300",
+    "400",
+    "500",
+    "600",
+    "700",
+    "800",
+    "900",
+]
+
+LogLevel = Literal["trace", "debug", "info", "warn", "error", "off"]
 
 
 @document()
@@ -53,6 +69,44 @@ class Log(FormComponent):
         log_file: str = None,
         tail: int = 100,
         dark: bool = False,
+        xterm_allow_proposed_api: Optional[bool] = False,
+        xterm_allow_transparency: Optional[bool] = False,
+        xterm_alt_click_moves_cursor: Optional[bool] = True,
+        xterm_convert_eol: Optional[bool] = False,
+        xterm_cursor_blink: Optional[bool] = False,
+        xterm_cursor_inactive_style: Literal[
+            "outline", "block", "bar", "underline", "none"
+        ] = "outline",
+        xterm_cursor_style: Literal["block", "underline", "bar"] = "block",
+        xterm_cursor_width: Optional[int] = 1,
+        xterm_custom_glyphs: Optional[bool] = False,
+        xterm_disable_stdin: Optional[bool] = True,
+        xterm_document_override: Optional[Any] = None,
+        xterm_draw_bold_text_in_bright_colors: Optional[bool] = True,
+        xterm_fast_scroll_modifier: Optional[
+            Literal["none", "alt", "ctrl", "shift"]
+        ] = "alt",
+        xterm_fast_scroll_sensitivity: Optional[int] = 1,
+        xterm_font_family: Optional[str] = "courier-new, courier, monospace",
+        xterm_font_size: Optional[int] = 15,
+        xterm_font_weight: Optional[FontWeight] = "normal",
+        xterm_font_weight_bold: Optional[FontWeight] = "bold",
+        xterm_ignore_bracketed_paste_mode: Optional[bool] = False,
+        xterm_letter_spacing: Optional[float] = 0,
+        xterm_line_height: Optional[float] = 1.0,
+        xterm_log_level: Optional[LogLevel] = "info",
+        xterm_mac_option_click_forces_selection: Optional[bool] = False,
+        xterm_mac_option_is_meta: Optional[bool] = False,
+        xterm_minimum_contrast_ratio: Optional[int] = 1,
+        xterm_overview_ruler_width: Optional[int] = 0,
+        xterm_rescale_overlapping_glyphs: Optional[bool] = False,
+        xterm_screen_reader_mode: Optional[bool] = False,
+        xterm_scroll_on_user_input: Optional[bool] = True,
+        xterm_scroll_sensitivity: Optional[int] = 1,
+        xterm_scrollback: Optional[int] = 1000,
+        xterm_smooth_scroll_duration: Optional[int] = 0,
+        xterm_tab_stop_width: Optional[int] = 8,
+        xterm_windows_mode: Optional[bool] = False,
         *,
         label: str | None = None,
         info: str | None = None,
@@ -68,6 +122,9 @@ class Log(FormComponent):
         render: bool = True,
     ):
         """
+        For all the xterm options, please refer to the xterm.js documentation:
+        https://xtermjs.org/docs/api/terminal/interfaces/iterminaloptions/
+
         Parameters:
             log_file: the log file path to read from.
             tail: from the end of the file, the number of lines to start read from.
@@ -91,6 +148,45 @@ class Log(FormComponent):
         self.current_pos = None
         self.fd = None
         self.stop_reading = False
+
+        self.xterm_allow_proposed_api = xterm_allow_proposed_api
+        self.xterm_allow_transparency = xterm_allow_transparency
+        self.xterm_alt_click_moves_cursor = xterm_alt_click_moves_cursor
+        self.xterm_convert_eol = xterm_convert_eol
+        self.xterm_cursor_blink = xterm_cursor_blink
+        self.xterm_cursor_inactive_style = xterm_cursor_inactive_style
+        self.xterm_cursor_style = xterm_cursor_style
+        self.xterm_cursor_width = xterm_cursor_width
+        self.xterm_custom_glyphs = xterm_custom_glyphs
+        self.xterm_disable_stdin = xterm_disable_stdin
+        self.xterm_document_override = xterm_document_override
+        self.xterm_draw_bold_text_in_bright_colors = (
+            xterm_draw_bold_text_in_bright_colors
+        )
+        self.xterm_fast_scroll_modifier = xterm_fast_scroll_modifier
+        self.xterm_fast_scroll_sensitivity = xterm_fast_scroll_sensitivity
+        self.xterm_font_family = xterm_font_family
+        self.xterm_font_size = xterm_font_size
+        self.xterm_font_weight = xterm_font_weight
+        self.xterm_font_weight_bold = xterm_font_weight_bold
+        self.xterm_ignore_bracketed_paste_mode = xterm_ignore_bracketed_paste_mode
+        self.xterm_letter_spacing = xterm_letter_spacing
+        self.xterm_line_height = xterm_line_height
+        self.xterm_log_level = xterm_log_level
+        self.xterm_mac_option_click_forces_selection = (
+            xterm_mac_option_click_forces_selection
+        )
+        self.xterm_mac_option_is_meta = xterm_mac_option_is_meta
+        self.xterm_minimum_contrast_ratio = xterm_minimum_contrast_ratio
+        self.xterm_overview_ruler_width = xterm_overview_ruler_width
+        self.xterm_rescale_overlapping_glyphs = xterm_rescale_overlapping_glyphs
+        self.xterm_screen_reader_mode = xterm_screen_reader_mode
+        self.xterm_scroll_on_user_input = xterm_scroll_on_user_input
+        self.xterm_scroll_sensitivity = xterm_scroll_sensitivity
+        self.xterm_scrollback = xterm_scrollback
+        self.xterm_smooth_scroll_duration = xterm_smooth_scroll_duration
+        self.xterm_tab_stop_width = xterm_tab_stop_width
+        self.xterm_windows_mode = xterm_windows_mode
 
         super().__init__(
             label=label,
@@ -122,7 +218,7 @@ class Log(FormComponent):
         return {"type": "string"}
 
     def example_payload(self) -> Any:
-        return "Hello!!"
+        pass
 
     def example_value(self) -> Any:
-        return "Hello!!"
+        pass
