@@ -43,7 +43,7 @@ classifiers = [
 dev = ["build", "twine"]
 
 [tool.hatch.build]
-artifacts = ["/backend/gradio_log/templates", "*.pyi", "backend/gradio_log/templates", "backend/gradio_log/templates", "backend/gradio_log/templates", "backend/gradio_log/templates", "backend/gradio_log/templates", "backend/gradio_log/templates", "backend/gradio_log/templates"]
+artifacts = ["/backend/gradio_log/templates", "*.pyi", "backend/gradio_log/templates", "backend/gradio_log/templates", "backend/gradio_log/templates", "backend/gradio_log/templates", "backend/gradio_log/templates", "backend/gradio_log/templates", "backend/gradio_log/templates", "backend/gradio_log/templates"]
 
 [tool.hatch.build.targets.wheel]
 packages = ["/backend/gradio_log"]

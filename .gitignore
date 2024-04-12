@@ -9,3 +9,5 @@ __tmp/*
 node_modules
 test.log
 .DS_Store
+backend/gradio_log/templates
+demo/space.py
