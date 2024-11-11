@@ -69,6 +69,7 @@ class Log(FormComponent):
         log_file: str = None,
         tail: int = 100,
         dark: bool = False,
+        height: str | int | None = 240,
         xterm_allow_proposed_api: Optional[bool] = False,
         xterm_allow_transparency: Optional[bool] = False,
         xterm_alt_click_moves_cursor: Optional[bool] = True,
@@ -148,6 +149,7 @@ class Log(FormComponent):
         self.current_pos = None
         self.fd = None
         self.stop_reading = False
+        self.height = height
 
         self.xterm_allow_proposed_api = xterm_allow_proposed_api
         self.xterm_allow_transparency = xterm_allow_transparency

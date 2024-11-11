@@ -15,6 +15,7 @@
 		submit: never;
 		input: never;
 	}>;
+	export let height = 240;
 	export let log_file = "";
 	export let label = `log of ${log_file}`;
 	export let dark = false;
@@ -112,19 +113,20 @@
 			scrollback: xterm_scrollback,
 			windowsMode: xterm_windows_mode,
 		});
+
 		term.open(termNode);
 		const fitAddon = new FitAddon();
 		term.loadAddon(fitAddon);
-		setTimeout(() => {
-			fitAddon.fit();
-		}, 300);
 
 		const handleWindowResize = () => {
 			fitAddon.fit();
 		};
 
-		window.addEventListener("resize", handleWindowResize);
+		setTimeout(() => {
+			fitAddon.fit();
+		}, 300);
 
+		window.addEventListener("resize", handleWindowResize);
 		return () => {
 			window.removeEventListener("resize", handleWindowResize);
 		};
@@ -142,6 +144,7 @@
 	{elem_id}
 	{scale}
 	{min_width}
+	{height}
 	elem_classes={[...elem_classes, dark ? "dark" : ""]}
 	allow_overflow={false}
 	padding={true}
@@ -153,9 +156,9 @@
 			{...loading_status}
 		/>
 	{/if}
-	<div>
+	<div style="height: 100%;">
 		<BlockTitle {show_label} info={undefined}>{label}</BlockTitle>
-		<div bind:this={termNode}></div>
+		<div style="height: calc(100% - 10px);" bind:this={termNode}></div>
 	</div>
 </Block>
 
