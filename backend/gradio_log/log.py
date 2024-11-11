@@ -5,6 +5,7 @@ from __future__ import annotations
 import time
 from typing import Any, Literal, Optional
 
+import gradio as gr
 from gradio.components.base import FormComponent
 from gradio.events import Events
 from gradio_client.documentation import document
@@ -35,34 +36,41 @@ class Log(FormComponent):
     EVENTS = [Events.load]
 
     def find_start_position(self) -> int:
-        self.io.seek(0, 2)
-        file_size = self.io.tell()
-        lines_found = 0
-        block_size = 1024
-        blocks = []
+        with open(self.log_file, "rb") as f:
+            f.seek(0, 2)
 
-        while self.io.tell() > 0 and lines_found <= self.tail:
-            self.io.seek(max(self.io.tell() - block_size, 0))
-            block = self.io.read(block_size)
-            blocks.append(block)
-            lines_found += block.count(b"\n")
-            self.io.seek(-len(block), 1)
+            file_size = f.tell()
+            lines_found = 0
+            block_size = 1024
+            blocks = []
 
-        all_read_bytes = b"".join(reversed(blocks))
-        lines = all_read_bytes.splitlines()
+            while f.tell() > 0 and lines_found <= self.tail:
+                f.seek(max(f.tell() - block_size, 0))
+                block = f.read(block_size)
+                blocks.append(block)
+                lines_found += block.count(b"\n")
+                f.seek(-len(block), 1)
 
-        if self.tail >= len(lines):
-            return 0
-        last_lines = b"\n".join(lines[-self.tail :])
-        return file_size - len(last_lines) - 1
+            all_read_bytes = b"".join(reversed(blocks))
+            lines = all_read_bytes.splitlines()
 
-    def read_to_end(self) -> bytes:
-        if self.current_pos is None or self.stop_reading:
-            return None
-        self.io.seek(self.current_pos)
-        b = self.io.read().decode()
-        self.current_pos = self.io.tell()
-        return b
+            if self.tail >= len(lines):
+                return 0
+            last_lines = b"\n".join(lines[-self.tail :])
+            return file_size - len(last_lines) - 1
+
+    def get_current_reading_pos(self, session_hash: str) -> int:
+        if session_hash not in self.current_reading_positions:
+            self.current_reading_positions[session_hash] = self.find_start_position()
+        return self.current_reading_positions[session_hash]
+
+    def read_to_end(self, session_hash: str) -> bytes:
+        with open(self.log_file, "rb") as f:
+            current_pos = self.get_current_reading_pos(session_hash)
+            f.seek(current_pos)
+            b = f.read().decode()
+            current_pos = f.tell()
+            return b
 
     def __init__(
         self,
@@ -111,7 +119,7 @@ class Log(FormComponent):
         *,
         label: str | None = None,
         info: str | None = None,
-        every: float = 0.3,
+        every: float = 0.5,
         show_label: bool | None = None,
         container: bool = True,
         scale: int | None = None,
@@ -147,9 +155,8 @@ class Log(FormComponent):
         self.tail = tail
         self.dark = dark
         self.current_pos = None
-        self.fd = None
-        self.stop_reading = False
         self.height = height
+        self.current_reading_positions = {}
 
         self.xterm_allow_proposed_api = xterm_allow_proposed_api
         self.xterm_allow_transparency = xterm_allow_transparency
@@ -190,6 +197,8 @@ class Log(FormComponent):
         self.xterm_tab_stop_width = xterm_tab_stop_width
         self.xterm_windows_mode = xterm_windows_mode
 
+        self.state = gr.State(None)
+
         super().__init__(
             label=label,
             info=info,
@@ -203,18 +212,17 @@ class Log(FormComponent):
             elem_id=elem_id,
             elem_classes=elem_classes,
             render=render,
+            inputs=[self.state],
             value=self.read_to_end,
         )
 
-        self.load(self.handle_load_event)
+        self.load(self.handle_load_event, outputs=self.state)
 
-    def handle_load_event(self):
-        # prevent race condition
-        self.stop_reading = True
-        time.sleep(1)
-        self.io = open(self.log_file, "rb")
-        self.current_pos = self.find_start_position()
-        self.stop_reading = False
+    def handle_load_event(self, request: gr.Request) -> str:
+        return request.session_hash
+
+    def handle_unload_event(self, request: gr.Request):
+        print("request on unload: ", request)
 
     def api_info(self) -> dict[str, Any]:
         return {"type": "string"}
