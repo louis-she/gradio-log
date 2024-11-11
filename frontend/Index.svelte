@@ -6,8 +6,8 @@
 	import { Block } from "@gradio/atoms";
 	import { StatusTracker } from "@gradio/statustracker";
 	import type { LoadingStatus } from "@gradio/statustracker";
-	import xterm from "@xterm/xterm";
-	import addon from "xterm-addon-fit";
+	import { Terminal } from "@xterm/xterm";
+	import { FitAddon } from "xterm-addon-fit";
 	import { onMount } from "svelte";
 
 	export let gradio: Gradio<{
@@ -74,7 +74,7 @@
 			};
 
 	onMount(() => {
-		term = new xterm.Terminal({
+		term = new Terminal({
 			theme,
 			allowProposedApi: xterm_allow_proposed_api,
 			allowTransparency: xterm_allow_transparency,
@@ -113,7 +113,7 @@
 			windowsMode: xterm_windows_mode,
 		});
 		term.open(termNode);
-		const fitAddon = new addon.FitAddon();
+		const fitAddon = new FitAddon();
 		term.loadAddon(fitAddon);
 		setTimeout(() => {
 			fitAddon.fit();
