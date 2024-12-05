@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import time
 from typing import Any, Literal, Optional
 
 import gradio as gr
@@ -70,6 +69,7 @@ class Log(FormComponent):
             f.seek(current_pos)
             b = f.read().decode()
             current_pos = f.tell()
+            self.current_reading_positions[session_hash] = current_pos
             return b
 
     def __init__(

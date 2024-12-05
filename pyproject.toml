@@ -8,7 +8,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "gradio_log"
-version = "0.0.7"
+version = "0.0.8"
 description = "A Log component for Gradio which can easily show some log file in the interface."
 readme = "README.md"
 license = "Apache-2.0"
